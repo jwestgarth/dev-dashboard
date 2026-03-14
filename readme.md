@@ -96,7 +96,7 @@ read:user
 
 repo
 
-Run with Docker (Recommended)
+# Run with Docker (Recommended)
 docker compose up --build
 
 The dashboard will start directly in your terminal.
