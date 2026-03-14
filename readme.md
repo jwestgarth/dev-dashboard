@@ -10,7 +10,7 @@ Built using **Python**, **Docker**, and **Textual** to create a modern terminal 
 
 ## Screenshot
 
-Add a screenshot later to make the project page more visually appealing.
+![DEV Dashboard Screenshot](docs/screenshot.png)
 
 Example dashboard layout:
 
