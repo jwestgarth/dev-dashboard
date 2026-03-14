@@ -1,3 +1,4 @@
+from screens.repos_screen import RepoScreen
 from textual.app import App, ComposeResult
 from textual.containers import Grid
 from textual.widgets import Header, Footer
@@ -32,9 +33,15 @@ class DevDashboard(App):
     }
     """
 
+    # Register additional screens
+    SCREENS = {
+        "repos": RepoScreen
+    }
+
     BINDINGS = [
         ("q", "quit", "Quit"),
         ("r", "refresh", "Refresh Dashboard"),
+        ("2", "repos", "Open Repositories Page"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -69,6 +76,10 @@ class DevDashboard(App):
 
             if hasattr(widget, "update_repos"):
                 widget.update_repos()
+
+    # New action to open the repo screen
+    def action_repos(self):
+        self.push_screen("repos")
 
 
 if __name__ == "__main__":
