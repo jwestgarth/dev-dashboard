@@ -6,45 +6,27 @@ class SystemPanel(Static):
 
     def on_mount(self):
 
-        self.cpu_history = [0] * 30
-        self.ram_history = [0] * 30
+        self.set_interval(2, self.update_stats)
 
-        self.set_interval(1, self.update_stats)
-
-    def sparkline(self, values):
-
-        blocks = "▁▂▃▄▅▆▇"
-
-        result = ""
-
-        for v in values:
-
-            index = int((v / 100) * (len(blocks) - 1))
-            result += blocks[index]
-
-        return result
+        self.update_stats()
 
     def update_stats(self):
 
         cpu = psutil.cpu_percent()
-        ram = psutil.virtual_memory().percent
 
-        self.cpu_history.append(cpu)
-        self.cpu_history = self.cpu_history[-30:]
+        mem = psutil.virtual_memory().percent
 
-        self.ram_history.append(ram)
-        self.ram_history = self.ram_history[-30:]
+        disk = psutil.disk_usage("/").percent
 
-        cpu_graph = self.sparkline(self.cpu_history)
-        ram_graph = self.sparkline(self.ram_history)
+        load = psutil.getloadavg()[0] if hasattr(psutil, "getloadavg") else 0
 
-        self.update(
-f"""Dev System Monitor
+        text = f"""
+System Monitor
 
-CPU  {cpu:.1f}%
-{cpu_graph}
-
-RAM  {ram:.1f}%
-{ram_graph}
+CPU      {cpu}%
+Memory   {mem}%
+Disk     {disk}%
+Load     {load:.2f}
 """
-        )
+
+        self.update(text)

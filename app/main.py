@@ -12,7 +12,6 @@ from pages.docker_page import DockerPage
 from pages.logs_page import LogsPage
 
 
-# Initialize logger
 logger = get_logger()
 
 
@@ -28,19 +27,10 @@ Screen {
     color: green;
 }
 
-/* HEADER / FOOTER */
-
-Header {
+Header, Footer {
     background: black;
     color: green;
 }
-
-Footer {
-    background: black;
-    color: green;
-}
-
-/* NAV BAR */
 
 NavBar {
     height: 3;
@@ -61,21 +51,15 @@ NavBar {
     background: green;
 }
 
-/* CONTENT */
-
 #content {
     height: 1fr;
 }
-
-/* GRID */
 
 Grid {
     grid-size: 2 3;
     grid-gutter: 1 1;
     height: 1fr;
 }
-
-/* PANELS */
 
 .panel {
     border: round green;
@@ -84,13 +68,9 @@ Grid {
     content-align: center middle;
 }
 
-/* TEXT */
-
 Static {
     color: green;
 }
-
-/* INPUT */
 
 Input {
     background: black;
@@ -104,9 +84,10 @@ Input {
         ("2", "repos", "Repositories"),
         ("3", "docker", "Docker"),
         ("4", "logs", "Logs"),
-        ("r", "refresh", "Refresh"),
         ("q", "quit", "Quit"),
     ]
+
+    # ------------------------------------------------
 
     def compose(self) -> ComposeResult:
 
@@ -119,32 +100,45 @@ Input {
 
         yield Footer()
 
+    # ------------------------------------------------
+
     def on_mount(self):
 
         logger.info("Dashboard started")
 
+        # Create pages once
+        self.pages = {
+            "dashboard": DashboardPage(),
+            "repos": ReposPage(),
+            "docker": DockerPage(),
+            "logs": LogsPage(),
+        }
+
+        # Mount all pages but hide them
+        for page in self.pages.values():
+            page.display = False
+            self.content.mount(page)
+
+        # Show dashboard first
         self.show_page("dashboard")
+
+    # ------------------------------------------------
 
     def show_page(self, page):
 
         logger.info(f"Switched to page: {page}")
 
-        self.content.remove_children()
+        # Show selected page, hide others
+        for name, widget in self.pages.items():
+            widget.display = (name == page)
 
-        if page == "dashboard":
-            self.content.mount(DashboardPage())
-
-        elif page == "repos":
-            self.content.mount(ReposPage())
-
-        elif page == "docker":
-            self.content.mount(DockerPage())
-
-        elif page == "logs":
-            self.content.mount(LogsPage())
+        # Move keyboard focus to active page
+        self.set_focus(self.pages[page])
 
         nav = self.query_one(NavBar)
         nav.set_active(page)
+
+    # ------------------------------------------------
 
     def action_dashboard(self):
         self.show_page("dashboard")
@@ -160,7 +154,4 @@ Input {
 
 
 if __name__ == "__main__":
-
-    app = DevDashboard()
-
-    app.run()
+    DevDashboard().run()

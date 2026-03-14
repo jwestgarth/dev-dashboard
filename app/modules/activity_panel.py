@@ -41,10 +41,13 @@ class ActivityPanel(Static):
         text = "Activity Feed\n\n"
 
         if not self.history:
+
             text += "No events yet"
 
         else:
+
             for item in self.history:
+
                 text += f"• {item}\n"
 
         self.update(text)
