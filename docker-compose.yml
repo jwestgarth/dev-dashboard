@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  dev-dashboard:
+    build: .
+    volumes:
+      - C:/projects:/projects
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    stdin_open: true
+    tty: true
