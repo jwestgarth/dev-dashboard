@@ -57,11 +57,17 @@ Clean green terminal theme
 The dashboard is composed of modular panels:
 
 DEV Dashboard
+
 │
+
 ├── System Monitor
+
 ├── GitHub Repositories
+
 ├── Repository Activity
+
 ├── Docker Containers
+
 └── Todo List
 
 Each panel is implemented as an independent Textual widget, making the dashboard easy to extend.
@@ -122,20 +128,35 @@ r	Refresh panels
 Project Structure
 
 dev-dashboard
+
 │
+
 ├── app
+
 │   ├── main.py
+
 │   └── modules
+
 │       ├── docker_panel.py
+
 │       ├── github_repos_panel.py
+
 │       ├── logo_panel.py
+
 │       ├── repo_panel.py
+
 │       ├── system_panel.py
+
 │       └── todo_panel.py
+
 │
+
 ├── docker-compose.yml
+
 ├── Dockerfile
+
 ├── requirements.txt
+
 └── README.md
 
 # Roadmap
