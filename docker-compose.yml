@@ -2,6 +2,7 @@ version: "3"
 
 services:
   dev-dashboard:
+    container_name: dev-dashboard
     build: .
     volumes:
       - C:/projects:/projects
@@ -10,3 +11,4 @@ services:
       - GITHUB_TOKEN=${GITHUB_TOKEN}
     stdin_open: true
     tty: true
+    command: python main.py
