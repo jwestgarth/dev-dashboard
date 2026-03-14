@@ -1,11 +1,16 @@
 services:
   dev-dashboard:
-    build: .
+
     container_name: dev-dashboard
-    volumes:
-      - C:/projects:/projects
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
+
+    build: .
+
     stdin_open: true
     tty: true
+
+    volumes:
+      - ./projects:/projects
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}

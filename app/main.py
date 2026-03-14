@@ -14,7 +14,6 @@ from pages.logs_page import LogsPage
 
 # Initialize logger
 logger = get_logger()
-logger.info("Dashboard started")
 
 
 class DevDashboard(App):
@@ -26,29 +25,49 @@ class DevDashboard(App):
 Screen {
     layout: vertical;
     background: black;
+    color: green;
 }
 
-/* NAVBAR */
+/* HEADER / FOOTER */
+
+Header {
+    background: black;
+    color: green;
+}
+
+Footer {
+    background: black;
+    color: green;
+}
+
+/* NAV BAR */
 
 NavBar {
     height: 3;
     layout: horizontal;
     align: left middle;
     padding-left: 1;
+    border-bottom: solid green;
 }
 
 .navbtn {
     margin-right: 2;
-    height: auto;
+    color: green;
+    background: black;
 }
 
-/* CONTENT AREA */
+.navbtn.-active {
+    color: black;
+    background: green;
+}
+
+/* CONTENT */
 
 #content {
     height: 1fr;
 }
 
-/* GRID LAYOUT */
+/* GRID */
 
 Grid {
     grid-size: 2 3;
@@ -63,6 +82,20 @@ Grid {
     padding: 1;
     height: 1fr;
     content-align: center middle;
+}
+
+/* TEXT */
+
+Static {
+    color: green;
+}
+
+/* INPUT */
+
+Input {
+    background: black;
+    color: green;
+    border: solid green;
 }
 """
 
@@ -87,6 +120,8 @@ Grid {
         yield Footer()
 
     def on_mount(self):
+
+        logger.info("Dashboard started")
 
         self.show_page("dashboard")
 
@@ -125,4 +160,7 @@ Grid {
 
 
 if __name__ == "__main__":
-    DevDashboard().run()
+
+    app = DevDashboard()
+
+    app.run()

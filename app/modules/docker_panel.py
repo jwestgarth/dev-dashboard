@@ -3,6 +3,8 @@ from textual.widgets import Static
 from textual.reactive import reactive
 from textual import events
 
+from modules.activity_panel import ActivityPanel
+
 
 class DockerPanel(Static):
 
@@ -19,8 +21,12 @@ class DockerPanel(Static):
 
         self.set_interval(5, self.refresh_containers)
 
-    def on_focus(self):
-        self.render_panel()
+    def activity(self):
+
+        try:
+            return self.app.query_one(ActivityPanel)
+        except:
+            return None
 
     def refresh_containers(self):
 
@@ -65,6 +71,8 @@ class DockerPanel(Static):
         if not self.containers:
             return
 
+        container = self.containers[self.selected]
+
         if event.key == "down":
 
             self.selected = min(self.selected + 1, len(self.containers) - 1)
@@ -77,10 +85,16 @@ class DockerPanel(Static):
 
         elif event.key == "r":
 
-            container = self.containers[self.selected]
             container.restart()
+
+            activity = self.activity()
+            if activity:
+                activity.log(f"container restarted: {container.name}")
 
         elif event.key == "s":
 
-            container = self.containers[self.selected]
             container.stop()
+
+            activity = self.activity()
+            if activity:
+                activity.log(f"container stopped: {container.name}")

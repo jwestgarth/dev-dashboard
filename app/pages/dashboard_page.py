@@ -1,5 +1,4 @@
-from textual.containers import Grid
-from textual.widget import Widget
+from textual.containers import Grid, Vertical
 
 from modules.logo_panel import LogoPanel
 from modules.system_panel import SystemPanel
@@ -7,9 +6,10 @@ from modules.repo_panel import RepoPanel
 from modules.todo_panel import TodoPanel
 from modules.github_repos_panel import GithubReposPanel
 from modules.docker_panel import DockerPanel
+from modules.activity_panel import ActivityPanel
 
 
-class DashboardPage(Widget):
+class DashboardPage(Vertical):
 
     def compose(self):
 
@@ -22,4 +22,4 @@ class DashboardPage(Widget):
             yield TodoPanel(classes="panel")
 
             yield RepoPanel(classes="panel")
-            yield DockerPanel(classes="panel")
+            yield ActivityPanel(classes="panel")
