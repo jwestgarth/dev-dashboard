@@ -1,52 +1,50 @@
 import psutil
-import docker
 from textual.widgets import Static
 
 
 class SystemPanel(Static):
 
-    history = []
-
     def on_mount(self):
-        self.client = docker.from_env()
-        self.set_interval(2, self.update_monitor)
 
-    def bar(self, percent):
+        self.cpu_history = [0] * 30
+        self.ram_history = [0] * 30
 
-        total = 20
-        filled = int((percent / 100) * total)
+        self.set_interval(1, self.update_stats)
 
-        return "█" * filled + "░" * (total - filled)
+    def sparkline(self, values):
 
-    def update_monitor(self):
+        blocks = "▁▂▃▄▅▆▇"
+
+        result = ""
+
+        for v in values:
+
+            index = int((v / 100) * (len(blocks) - 1))
+            result += blocks[index]
+
+        return result
+
+    def update_stats(self):
 
         cpu = psutil.cpu_percent()
         ram = psutil.virtual_memory().percent
-        disk = psutil.disk_usage("/").percent
 
-        net = psutil.net_io_counters()
+        self.cpu_history.append(cpu)
+        self.cpu_history = self.cpu_history[-30:]
 
-        containers = self.client.containers.list()
+        self.ram_history.append(ram)
+        self.ram_history = self.ram_history[-30:]
 
-        cpu_bar = self.bar(cpu)
-        ram_bar = self.bar(ram)
-        disk_bar = self.bar(disk)
+        cpu_graph = self.sparkline(self.cpu_history)
+        ram_graph = self.sparkline(self.ram_history)
 
-        text = f"""
-Dev System Monitor
+        self.update(
+f"""Dev System Monitor
 
-CPU  [{cpu_bar}] {cpu}%
+CPU  {cpu:.1f}%
+{cpu_graph}
 
-RAM  [{ram_bar}] {ram}%
-
-Disk [{disk_bar}] {disk}%
-
-Network
-↓ {round(net.bytes_recv / 1024 / 1024, 1)} MB
-↑ {round(net.bytes_sent / 1024 / 1024, 1)} MB
-
-Docker
-Running containers: {len(containers)}
+RAM  {ram:.1f}%
+{ram_graph}
 """
-
-        self.update(text)
+        )

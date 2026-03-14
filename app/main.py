@@ -1,85 +1,127 @@
-from screens.repos_screen import RepoScreen
+from utils.logger import get_logger
+
 from textual.app import App, ComposeResult
-from textual.containers import Grid
+from textual.containers import Container
 from textual.widgets import Header, Footer
 
-from modules.logo_panel import LogoPanel
-from modules.system_panel import SystemPanel
-from modules.repo_panel import RepoPanel
-from modules.todo_panel import TodoPanel
-from modules.github_repos_panel import GithubReposPanel
-from modules.docker_panel import DockerPanel
+from modules.nav_bar import NavBar
+
+from pages.dashboard_page import DashboardPage
+from pages.repos_page import ReposPage
+from pages.docker_page import DockerPage
+from pages.logs_page import LogsPage
+
+
+# Initialize logger
+logger = get_logger()
+logger.info("Dashboard started")
 
 
 class DevDashboard(App):
 
+    ENABLE_COMMAND_PALETTE = False
+    ENABLE_MOUSE = True
+
     CSS = """
-    Screen {
-        layout: vertical;
-        background: black;
-    }
+Screen {
+    layout: vertical;
+    background: black;
+}
 
-    Grid {
-        grid-size: 2 3;
-        grid-gutter: 1;
-        height: 1fr;
-    }
+/* NAVBAR */
 
-    .panel {
-        border: round green;
-        padding: 1;
-        height: 1fr;
-        content-align: center middle;
-    }
-    """
+NavBar {
+    height: 3;
+    layout: horizontal;
+    align: left middle;
+    padding-left: 1;
+}
 
-    # Register additional screens
-    SCREENS = {
-        "repos": RepoScreen
-    }
+.navbtn {
+    margin-right: 2;
+    height: auto;
+}
+
+/* CONTENT AREA */
+
+#content {
+    height: 1fr;
+}
+
+/* GRID LAYOUT */
+
+Grid {
+    grid-size: 2 3;
+    grid-gutter: 1 1;
+    height: 1fr;
+}
+
+/* PANELS */
+
+.panel {
+    border: round green;
+    padding: 1;
+    height: 1fr;
+    content-align: center middle;
+}
+"""
 
     BINDINGS = [
+        ("1", "dashboard", "Dashboard"),
+        ("2", "repos", "Repositories"),
+        ("3", "docker", "Docker"),
+        ("4", "logs", "Logs"),
+        ("r", "refresh", "Refresh"),
         ("q", "quit", "Quit"),
-        ("r", "refresh", "Refresh Dashboard"),
-        ("2", "repos", "Open Repositories Page"),
     ]
 
     def compose(self) -> ComposeResult:
 
         yield Header(show_clock=True)
 
-        with Grid():
+        yield NavBar()
 
-            yield LogoPanel(classes="panel")
-            yield SystemPanel(classes="panel")
-
-            yield GithubReposPanel(classes="panel")
-            yield TodoPanel(classes="panel")
-
-            yield RepoPanel(classes="panel")
-            yield DockerPanel(classes="panel")
+        self.content = Container(id="content")
+        yield self.content
 
         yield Footer()
 
-    def action_refresh(self):
+    def on_mount(self):
 
-        for widget in self.query(".panel"):
+        self.show_page("dashboard")
 
-            if hasattr(widget, "refresh_stats"):
-                widget.refresh_stats()
+    def show_page(self, page):
 
-            if hasattr(widget, "scan_repos"):
-                widget.scan_repos()
+        logger.info(f"Switched to page: {page}")
 
-            if hasattr(widget, "update_containers"):
-                widget.update_containers()
+        self.content.remove_children()
 
-            if hasattr(widget, "update_repos"):
-                widget.update_repos()
+        if page == "dashboard":
+            self.content.mount(DashboardPage())
 
-    # New action to open the repo screen
+        elif page == "repos":
+            self.content.mount(ReposPage())
+
+        elif page == "docker":
+            self.content.mount(DockerPage())
+
+        elif page == "logs":
+            self.content.mount(LogsPage())
+
+        nav = self.query_one(NavBar)
+        nav.set_active(page)
+
+    def action_dashboard(self):
+        self.show_page("dashboard")
+
     def action_repos(self):
-        self.push_screen("repos")
+        self.show_page("repos")
+
+    def action_docker(self):
+        self.show_page("docker")
+
+    def action_logs(self):
+        self.show_page("logs")
 
 
 if __name__ == "__main__":

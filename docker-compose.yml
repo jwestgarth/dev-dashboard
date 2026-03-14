@@ -1,9 +1,7 @@
-version: "3"
-
 services:
   dev-dashboard:
-    container_name: dev-dashboard
     build: .
+    container_name: dev-dashboard
     volumes:
       - C:/projects:/projects
       - /var/run/docker.sock:/var/run/docker.sock
@@ -11,4 +9,3 @@ services:
       - GITHUB_TOKEN=${GITHUB_TOKEN}
     stdin_open: true
     tty: true
-    command: python main.py

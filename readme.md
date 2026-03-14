@@ -121,8 +121,8 @@ repo
 ## Run with Docker (Recommended)
 
 ```
-docker compose up -d --build
-docker attach dev-dashboard
+docker compose up -d
+docker exec -it dev-dashboard python main.py
 ```
 
 The dashboard will start directly in your terminal.
