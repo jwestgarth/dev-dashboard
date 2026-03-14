@@ -121,7 +121,8 @@ repo
 ## Run with Docker (Recommended)
 
 ```
-docker compose up --build
+docker compose up -d --build
+docker attach dev-dashboard
 ```
 
 The dashboard will start directly in your terminal.
