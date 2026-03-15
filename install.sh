@@ -1,8 +1,10 @@
 #!/bin/bash
+set -e
 
 echo "Installing Dev Dashboard..."
 
 git clone https://github.com/jwestgarth/dev-dashboard.git
+
 cd dev-dashboard
 
 pip3 install -r requirements.txt
