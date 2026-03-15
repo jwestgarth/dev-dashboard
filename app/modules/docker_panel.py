@@ -3,7 +3,7 @@ from textual.widgets import Static
 from textual.reactive import reactive
 from textual import events
 
-from modules.activity_panel import ActivityPanel
+from app.modules.activity_panel import ActivityPanel
 
 
 class DockerPanel(Static):

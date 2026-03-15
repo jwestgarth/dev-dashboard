@@ -1,7 +1,10 @@
-import logging
 import os
+import logging
 
-LOG_FILE = "/app/dashboard.log"
+LOG_DIR = os.path.join(os.path.expanduser("~"), ".dev-dashboard")
+os.makedirs(LOG_DIR, exist_ok=True)
+
+LOG_FILE = os.path.join(LOG_DIR, "dashboard.log")
 
 
 def get_logger():

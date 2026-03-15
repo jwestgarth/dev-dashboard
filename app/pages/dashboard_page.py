@@ -1,12 +1,12 @@
 from textual.containers import Grid, Vertical
 
-from modules.logo_panel import LogoPanel
-from modules.system_panel import SystemPanel
-from modules.repo_panel import RepoPanel
-from modules.todo_panel import TodoPanel
-from modules.github_repos_panel import GithubReposPanel
-from modules.docker_panel import DockerPanel
-from modules.activity_panel import ActivityPanel
+from app.modules.logo_panel import LogoPanel
+from app.modules.system_panel import SystemPanel
+from app.modules.repo_panel import RepoPanel
+from app.modules.todo_panel import TodoPanel
+from app.modules.github_repos_panel import GithubReposPanel
+from app.modules.docker_panel import DockerPanel
+from app.modules.activity_panel import ActivityPanel
 
 
 class DashboardPage(Vertical):

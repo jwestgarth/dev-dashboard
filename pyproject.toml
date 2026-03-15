@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dev-dashboard"
+version = "0.1.0"
+description = "Terminal Control Center for Developers"
+readme = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+    "textual",
+    "rich",
+    "psutil",
+    "requests",
+    "docker",
+    "gitpython"
+]
+
+[project.scripts]
+dev-dashboard = "app.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["app*"]

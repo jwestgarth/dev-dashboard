@@ -1,0 +1,248 @@
+Metadata-Version: 2.4
+Name: dev-dashboard
+Version: 0.1.0
+Summary: Terminal Control Center for Developers
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: textual
+Requires-Dist: rich
+Requires-Dist: psutil
+Requires-Dist: requests
+Requires-Dist: docker
+Requires-Dist: gitpython
+Dynamic: license-file
+
+# DEV Dashboard
+
+<p align="center">
+
+**Terminal Control Center for Developers**
+
+A modern **terminal-based developer dashboard** for monitoring repositories, Docker containers, GitHub activity, and system status — all from a clean interactive CLI interface.
+
+Built with **Python**, **Docker**, and **Textual**.
+
+</p>
+
+<p align="center">
+
+![Python](https://img.shields.io/badge/python-3.11+-blue.svg)
+![Docker](https://img.shields.io/badge/docker-supported-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![UI](https://img.shields.io/badge/ui-textual-purple.svg)
+![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos%20%7C%20windows-lightgrey.svg)
+
+</p>
+
+---
+
+# Overview
+
+**DEV Dashboard** is a lightweight terminal control center designed to give developers quick visibility into their development environment.
+
+It provides a **multi-page terminal UI** for:
+
+- Git repositories  
+- GitHub activity  
+- Docker containers  
+- System monitoring  
+- Developer workflow tools  
+
+All within a **fast keyboard-driven interface**.
+
+---
+
+# Screenshot
+
+![DEV Dashboard Screenshot](docs/screenshot.png)
+
+DEV Dashboard
+Terminal Control Center
+
+System Stats GitHub Repositories
+Repo Activity Todo List
+Local Repos Activity Feed
+
+# Navigation pages:
+
+1 Dashboard
+2 Repositories
+3 Docker
+4 Logs
+
+
+
+---
+
+# Features
+
+## System Monitoring
+
+View system statistics directly inside the dashboard.
+
+- CPU usage
+- Memory usage
+- Disk usage
+- System overview panel
+
+---
+
+## Git Repository Management
+
+Browse and manage repositories stored in `/projects`.
+
+Features include:
+
+- View all local repositories
+- Current branch display
+- Last commit information
+- Modified files detection
+- Commits ahead of origin
+- Pull repositories
+- View commit history
+- View repository status
+- Clone new repositories
+
+---
+
+## GitHub Integration
+
+Integrates with the GitHub API to show recent activity.
+
+Includes:
+
+- Push events
+- Pull requests
+- Issues
+- Repository stars
+- Activity feed panel
+
+Authentication via **GitHub Personal Access Token**.
+
+---
+
+## Docker Monitoring
+
+Manage Docker containers directly from the dashboard.
+
+Features include:
+
+- List all containers
+- View running / stopped status
+- Restart containers
+- Stop containers
+- View container logs
+- Auto-refresh container status
+
+---
+
+## Developer Workflow Tools
+
+Panels designed to support development workflows:
+
+- Todo list panel
+- Repo activity panel
+- Activity event feed
+- Repository overview
+
+---
+
+## Terminal UI
+
+Powered by **Textual** for a modern terminal experience.
+
+Features include:
+
+- Interactive terminal UI
+- Live updating panels
+- Keyboard navigation
+- Multi-page dashboard
+- Lightweight design
+- Clean green terminal theme
+
+---
+
+Each component is implemented as a **modular Textual widget**, making the dashboard easy to extend.
+
+---
+
+# Requirements
+
+- Python **3.11+**
+- Docker
+- Git
+- GitHub Personal Access Token *(optional)*
+
+---
+
+# Installation
+
+Clone the repository:
+
+git clone https://github.com/jwestgarth/dev-dashboard.git
+cd dev-dashboard
+
+## Configuration
+Create a .env file in the project root. 
+GITHUB_TOKEN=your_github_token
+GITHUB_USER=your_github_username
+
+Generate a token here:
+https://github.com/settings/tokens
+
+Recommended permissions
+read:user
+repo
+
+## Run with Docker (Recommended)
+
+Start the container: 
+
+docker compose up -d
+
+Launch the dashboard:
+
+docker exec -it dev-dashboard python main.py
+
+## Keyboard Shortcuts
+
+Global Navigation
+
+| Key | Action         |
+| --- | -------------- |
+| `1` | Dashboard      |
+| `2` | Repositories   |
+| `3` | Docker         |
+| `4` | Logs           |
+| `q` | Quit dashboard |
+
+Repository Controls
+
+| Key   | Action              |
+| ----- | ------------------- |
+| ↑ ↓   | Select repository   |
+| `p`   | Pull repository     |
+| `h`   | View commit history |
+| `s`   | Git status          |
+| `c`   | Clone repository    |
+| `ESC` | Close output        |
+
+Docker Controls
+
+| Key   | Action              |
+| ----- | ------------------- |
+| ↑ ↓   | Select container    |
+| `l`   | View container logs |
+| `r`   | Restart container   |
+| `s`   | Stop container      |
+| `ESC` | Close logs          |
+
+# License
+MIT License
+
+# Author
+Jack Westgarth
+
+GitHub
+https://github.com/jwestgarth

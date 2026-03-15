@@ -5,13 +5,11 @@ services:
 
     build: .
 
+    command: python -m app.main
+
     stdin_open: true
     tty: true
 
     volumes:
       - ./projects:/projects
       - /var/run/docker.sock:/var/run/docker.sock
-
-    environment:
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
-      - GITHUB_USER=${GITHUB_USER}

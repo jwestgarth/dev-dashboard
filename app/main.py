@@ -1,15 +1,15 @@
-from utils.logger import get_logger
+from app.utils.logger import get_logger
 
 from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widgets import Header, Footer
 
-from modules.nav_bar import NavBar
+from app.modules.nav_bar import NavBar
 
-from pages.dashboard_page import DashboardPage
-from pages.repos_page import ReposPage
-from pages.docker_page import DockerPage
-from pages.logs_page import LogsPage
+from app.pages.dashboard_page import DashboardPage
+from app.pages.repos_page import ReposPage
+from app.pages.docker_page import DockerPage
+from app.pages.logs_page import LogsPage
 
 
 logger = get_logger()
