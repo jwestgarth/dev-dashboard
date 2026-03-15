@@ -4,3 +4,4 @@ psutil
 requests
 gitpython
 docker
+python-dotenv

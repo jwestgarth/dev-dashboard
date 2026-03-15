@@ -1,3 +1,7 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 from app.utils.logger import get_logger
 
 from textual.app import App, ComposeResult
@@ -10,6 +14,7 @@ from app.pages.dashboard_page import DashboardPage
 from app.pages.repos_page import ReposPage
 from app.pages.docker_page import DockerPage
 from app.pages.logs_page import LogsPage
+
 
 
 logger = get_logger()
