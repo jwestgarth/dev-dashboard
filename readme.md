@@ -267,7 +267,7 @@ This will start the terminal dashboard interface.
 If you prefer using Docker:
 
 ```powershell
-docker compose up --build
+docker compose build -d
 ```
 
 This will start the dashboard inside a container.
@@ -314,7 +314,7 @@ docker compose up -d
 
 Launch the dashboard:
 
-docker exec -it dev-dashboard python main.py
+docker exec -it dev-dashboard python -m app.main
 
 ## Keyboard Shortcuts
 
