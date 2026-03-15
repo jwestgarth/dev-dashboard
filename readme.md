@@ -52,8 +52,11 @@ Local Repos Activity Feed
 # Navigation pages:
 
 1 Dashboard
+
 2 Repositories
+
 3 Docker
+
 4 Logs
 
 
@@ -166,6 +169,7 @@ Each component is implemented as a **modular Textual widget**, making the dashbo
 Clone the repository:
 
 git clone https://github.com/jwestgarth/dev-dashboard.git
+
 cd dev-dashboard
 
 # Installation (Optional)
@@ -285,15 +289,21 @@ C:\Users\<username>\AppData\Local\Python\pythoncore-3.14-64\Scripts\dev-dashboar
 ```
 
 ## Configuration
+
 Create a .env file in the project root. 
+
 GITHUB_TOKEN=your_github_token
+
 GITHUB_USER=your_github_username
 
 Generate a token here:
+
 https://github.com/settings/tokens
 
 Recommended permissions
+
 read:user
+
 repo
 
 ## Run with Docker (Recommended)
