@@ -168,6 +168,122 @@ Clone the repository:
 git clone https://github.com/jwestgarth/dev-dashboard.git
 cd dev-dashboard
 
+# Installation (Optional)
+
+## Install Python (Windows)
+
+The dashboard requires **Python 3.11+**.
+
+1. Download Python from:
+
+https://www.python.org/downloads/
+
+2. Run the installer.
+
+⚠️ **Important:** Enable this option during installation:
+
+```
+Add Python to PATH
+```
+
+3. Click **Install Now**.
+
+---
+
+## Verify Python Installation
+
+Open **PowerShell** and run:
+
+```powershell
+python --version
+```
+
+You should see something similar to:
+
+```
+Python 3.11.x
+```
+
+Then verify pip:
+
+```powershell
+pip --version
+```
+
+---
+
+## Install the Dashboard CLI
+
+Navigate to the project directory:
+
+```powershell
+cd C:\projects\dev-dashboard
+```
+
+Install the dashboard as a CLI tool:
+
+```powershell
+python -m pip install -e .
+```
+
+This installs the `dev-dashboard` command locally.
+
+---
+
+## Add Python Scripts to PATH (Windows)
+
+If PowerShell cannot find the `dev-dashboard` command, you need to add the Python Scripts directory to your PATH.
+
+1. Open **Edit Environment Variables**
+2. Under **User Variables**, edit **Path**
+3. Add the following entry:
+
+```
+C:\Users\<your-username>\AppData\Local\Python\pythoncore-3.14-64\Scripts
+```
+
+Restart PowerShell after saving.
+
+---
+
+## Run the Dashboard
+
+Once installed, you can launch the dashboard from anywhere:
+
+```powershell
+dev-dashboard
+```
+
+This will start the terminal dashboard interface.
+
+---
+
+## Run with Docker (Alternative)
+
+If you prefer using Docker:
+
+```powershell
+docker compose up --build
+```
+
+This will start the dashboard inside a container.
+
+---
+
+## Verify the CLI Command
+
+You can check that the command is available by running:
+
+```powershell
+where dev-dashboard
+```
+
+Expected output:
+
+```
+C:\Users\<username>\AppData\Local\Python\pythoncore-3.14-64\Scripts\dev-dashboard.exe
+```
+
 ## Configuration
 Create a .env file in the project root. 
 GITHUB_TOKEN=your_github_token
