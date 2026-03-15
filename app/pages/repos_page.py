@@ -303,7 +303,19 @@ class ReposPage(Vertical):
 
         elif event.key == "r":
 
-            self.scan_repos()
+            repo = self.repos[self.selected]
+
+            path = self.ensure_cloned(repo)
+
+        try:
+
+            subprocess.run(["git", "fetch"], cwd=path)
+            subprocess.run(["git", "pull"], cwd=path)
+
+        except:
+            pass
+
+        self.scan_repos()
 
     # ------------------------------------------------
     # Input handler
