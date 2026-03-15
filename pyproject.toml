@@ -1,21 +1,27 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "dev-dashboard"
-version = "0.1.0"
+version = "0.1.2"
 description = "Terminal Control Center for Developers"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+authors = [
+  { name = "Jack Westgarth" }
+]
 
 dependencies = [
-    "textual",
-    "rich",
-    "psutil",
-    "requests",
-    "docker",
-    "gitpython"
+  "textual",
+  "rich",
+  "psutil",
+  "requests",
+  "docker",
+  "gitpython",
+  "python-dotenv"
 ]
 
 [project.scripts]
@@ -23,3 +29,4 @@ dev-dashboard = "app.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["app*"]
+exclude = ["projects*", "docs*", "tests*"]

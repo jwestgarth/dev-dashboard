@@ -7,8 +7,12 @@ from textual.containers import Vertical
 from textual.reactive import reactive
 from textual import events
 
+from pathlib import Path
 
-PROJECT_PATH = "/projects"
+PROJECT_PATH = Path.home() / "projects"
+
+# ensure directory exists
+PROJECT_PATH.mkdir(exist_ok=True)
 
 
 class ReposPage(Vertical):

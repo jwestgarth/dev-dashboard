@@ -1,6 +1,0 @@
-textual
-rich
-psutil
-requests
-docker
-gitpython

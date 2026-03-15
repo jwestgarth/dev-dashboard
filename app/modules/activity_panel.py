@@ -1,19 +1,29 @@
 from textual.widgets import Static
 from datetime import datetime
-import os
+from pathlib import Path
 
-LOG_FILE = "/app/logs/dashboard.log"
+
+# ------------------------------------------------
+# Log location (cross-platform)
+# ------------------------------------------------
+
+LOG_DIR = Path.home() / ".dev-dashboard" / "logs"
+LOG_FILE = LOG_DIR / "dashboard.log"
 
 
 class ActivityPanel(Static):
 
     history = []
 
+    # ------------------------------------------------
+
     def on_mount(self):
 
-        os.makedirs("/app/logs", exist_ok=True)
+        # Ensure log directory exists
+        LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-        if os.path.exists(LOG_FILE):
+        # Load previous log history
+        if LOG_FILE.exists():
 
             with open(LOG_FILE) as f:
                 lines = f.readlines()
@@ -21,6 +31,8 @@ class ActivityPanel(Static):
             self.history = [l.strip() for l in lines][-10:]
 
         self.update_panel()
+
+    # ------------------------------------------------
 
     def log(self, message):
 
@@ -31,10 +43,13 @@ class ActivityPanel(Static):
         self.history.insert(0, entry)
         self.history = self.history[:10]
 
+        # Write to log file
         with open(LOG_FILE, "a") as f:
             f.write(entry + "\n")
 
         self.update_panel()
+
+    # ------------------------------------------------
 
     def update_panel(self):
 
