@@ -1,19 +1,54 @@
-import os
+import json
 import subprocess
 import webbrowser
+from pathlib import Path
 
 from textual.widgets import Static, Input
 from textual.containers import Vertical
 from textual.reactive import reactive
 from textual import events
 
-from pathlib import Path
 
-PROJECT_PATH = Path.home() / "projects"
+CONFIG_DIR = Path.home() / ".dev-dashboard"
+CONFIG_DIR.mkdir(exist_ok=True)
 
-# ensure directory exists
-PROJECT_PATH.mkdir(exist_ok=True)
+REPO_FILE = CONFIG_DIR / "repos.json"
 
+CLONE_DIR = Path.home() / "projects"
+CLONE_DIR.mkdir(exist_ok=True)
+
+
+# ------------------------------------------------
+# Repo storage helpers
+# ------------------------------------------------
+
+def load_repos():
+
+    if not REPO_FILE.exists():
+        return []
+
+    try:
+        with open(REPO_FILE) as f:
+            data = json.load(f)
+            return data.get("repos", [])
+    except Exception:
+        return []
+
+
+def save_repos(repos):
+
+    with open(REPO_FILE, "w") as f:
+        json.dump({"repos": repos}, f, indent=2)
+
+
+def repo_name(url):
+
+    return url.split("/")[-1].replace(".git", "")
+
+
+# ------------------------------------------------
+# Repos Page
+# ------------------------------------------------
 
 class ReposPage(Vertical):
 
@@ -22,11 +57,15 @@ class ReposPage(Vertical):
     repos = reactive([])
     selected = reactive(0)
 
+    # ------------------------------------------------
+
     def on_mount(self):
 
         self.repo_list = Static()
         self.output = Static()
-        self.clone_input = Input(placeholder="Paste repo URL and press Enter")
+        self.clone_input = Input(
+            placeholder="Paste repo URL and press Enter"
+        )
 
         self.clone_input.display = False
         self.output.display = False
@@ -40,25 +79,12 @@ class ReposPage(Vertical):
         self.focus()
 
     # ------------------------------------------------
-    # Scan for repos
+    # Load repos
     # ------------------------------------------------
 
     def scan_repos(self):
 
-        repos = []
-
-        if not os.path.exists(PROJECT_PATH):
-            self.repo_list.update("No /projects directory found")
-            return
-
-        for folder in os.listdir(PROJECT_PATH):
-
-            repo_path = os.path.join(PROJECT_PATH, folder)
-
-            if os.path.isdir(os.path.join(repo_path, ".git")):
-                repos.append(folder)
-
-        self.repos = sorted(repos)
+        self.repos = load_repos()
 
         if self.selected >= len(self.repos):
             self.selected = max(0, len(self.repos) - 1)
@@ -66,12 +92,35 @@ class ReposPage(Vertical):
         self.render_repos()
 
     # ------------------------------------------------
+    # Clone repo if needed
+    # ------------------------------------------------
+
+    def ensure_cloned(self, url):
+
+        name = repo_name(url)
+        path = CLONE_DIR / name
+
+        if not path.exists():
+
+            subprocess.run(
+                ["git", "clone", url],
+                cwd=CLONE_DIR
+            )
+
+        return path
+
+    # ------------------------------------------------
     # Git helper
     # ------------------------------------------------
 
     def git(self, args, repo):
 
-        path = os.path.join(PROJECT_PATH, repo)
+        name = repo_name(repo)
+        path = CLONE_DIR / name
+
+        # auto clone if missing
+        if not path.exists():
+            self.ensure_cloned(repo)
 
         try:
 
@@ -83,7 +132,7 @@ class ReposPage(Vertical):
 
             return result
 
-        except:
+        except Exception:
             return "?"
 
     # ------------------------------------------------
@@ -91,11 +140,9 @@ class ReposPage(Vertical):
     # ------------------------------------------------
 
     def repo_branch(self, repo):
-
         return self.git(["rev-parse", "--abbrev-ref", "HEAD"], repo)
 
     def repo_last_commit(self, repo):
-
         return self.git(["log", "-1", "--pretty=format:%cr"], repo)
 
     def repo_health(self, repo):
@@ -107,13 +154,13 @@ class ReposPage(Vertical):
         if status and status != "?":
             return "✖ modified"
 
-        if ahead and ahead != "0" and ahead != "?":
+        if ahead and ahead not in ["0", "?"]:
             return f"▲ {ahead} ahead"
 
         return "● clean"
 
     # ------------------------------------------------
-    # Render repos
+    # Render UI
     # ------------------------------------------------
 
     def render_repos(self):
@@ -122,7 +169,8 @@ class ReposPage(Vertical):
 
         if not self.repos:
 
-            text += "No repositories found"
+            text += "No repositories added\n\n"
+            text += "Press 'c' to add a repository URL\n"
 
         else:
 
@@ -130,34 +178,40 @@ class ReposPage(Vertical):
 
                 prefix = ">" if i == self.selected else " "
 
+                name = repo_name(repo)
+
                 branch = self.repo_branch(repo)
                 health = self.repo_health(repo)
                 last = self.repo_last_commit(repo)
 
-                text += f"{prefix} {repo:<25} {health}\n"
+                text += f"{prefix} {name:<25} {health}\n"
                 text += f"    branch: {branch}\n"
-                text += f"    last: {last}\n\n"
+                text += f"    last:   {last}\n\n"
 
         text += (
             "\n"
             "↑ ↓ select\n\n"
             "p pull   s status   h history\n"
-            "c clone\n"
+            "r refresh\n"
+            "c add repo\n"
             "o open vscode   b open github\n"
             "ESC close output"
-        )
+)
 
         self.repo_list.update(text)
 
     # ------------------------------------------------
-    # Run git commands
+    # Run git command
     # ------------------------------------------------
 
     def run_git(self, args):
 
+        if not self.repos:
+            return
+
         repo = self.repos[self.selected]
 
-        path = os.path.join(PROJECT_PATH, repo)
+        path = self.ensure_cloned(repo)
 
         try:
 
@@ -171,31 +225,20 @@ class ReposPage(Vertical):
             result = str(e)
 
         self.output.display = True
-
         self.output.update(result)
 
     # ------------------------------------------------
-    # Clone repo
+    # Add repo
     # ------------------------------------------------
 
-    def clone_repo(self, url):
+    def add_repo(self, url):
 
-        try:
+        repos = load_repos()
 
-            result = subprocess.check_output(
-                ["git", "clone", url],
-                cwd=PROJECT_PATH
-            ).decode()
+        if url not in repos:
+            repos.append(url)
 
-        except Exception as e:
-
-            result = str(e)
-
-        self.output.display = True
-
-        self.output.update(result)
-
-        self.clone_input.display = False
+        save_repos(repos)
 
         self.scan_repos()
 
@@ -205,7 +248,6 @@ class ReposPage(Vertical):
 
     async def on_key(self, event: events.Key):
 
-        # close output window
         if self.output.display:
 
             if event.key == "escape":
@@ -213,7 +255,6 @@ class ReposPage(Vertical):
 
             return
 
-        # clone input mode
         if self.clone_input.display:
 
             if event.key == "escape":
@@ -221,14 +262,12 @@ class ReposPage(Vertical):
 
             return
 
-        if not self.repos:
-            return
-
-        # navigation
-
         if event.key == "down":
 
-            self.selected = min(self.selected + 1, len(self.repos) - 1)
+            self.selected = min(
+                self.selected + 1,
+                len(self.repos) - 1
+            )
             self.render_repos()
 
         elif event.key == "up":
@@ -236,54 +275,38 @@ class ReposPage(Vertical):
             self.selected = max(self.selected - 1, 0)
             self.render_repos()
 
-        # git commands
-
         elif event.key == "p":
-
             self.run_git(["pull"])
 
         elif event.key == "h":
-
             self.run_git(["log", "--oneline", "-n", "10"])
 
         elif event.key == "s":
-
             self.run_git(["status"])
-
-        # clone
 
         elif event.key == "c":
 
             self.clone_input.display = True
             self.clone_input.focus()
 
-        # open vscode
-
         elif event.key == "o":
 
             repo = self.repos[self.selected]
+            path = self.ensure_cloned(repo)
 
-            path = os.path.join(PROJECT_PATH, repo)
-
-            subprocess.Popen(["code", path], shell=True)
-
-        # open github
+            subprocess.Popen(["code", str(path)], shell=True)
 
         elif event.key == "b":
 
             repo = self.repos[self.selected]
+            webbrowser.open(repo)
 
-            url = self.git(
-                ["config", "--get", "remote.origin.url"],
-                repo
-            )
+        elif event.key == "r":
 
-            if url and url != "?":
-
-                webbrowser.open(url)
+            self.scan_repos()
 
     # ------------------------------------------------
-    # Input submit
+    # Input handler
     # ------------------------------------------------
 
     async def on_input_submitted(self, message: Input.Submitted):
@@ -291,6 +314,8 @@ class ReposPage(Vertical):
         url = message.value.strip()
 
         if url:
-            self.clone_repo(url)
+            self.add_repo(url)
 
         message.input.value = ""
+
+        self.clone_input.display = False

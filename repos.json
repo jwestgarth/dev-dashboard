@@ -1,0 +1,6 @@
+{
+  "repos": [
+    "https://github.com/jwestgarth/dev-dashboard.git",
+    "https://github.com/docker/docker-py.git"
+  ]
+}
