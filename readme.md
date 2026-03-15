@@ -40,10 +40,13 @@ All within a **fast keyboard-driven interface**.
 
 # Screenshot
 
-![DEV Dashboard Screenshot](docs/screenshot.png)
+<p align="center">
+  <img src="docs/screenshot.png" alt="DEV Dashboard Screenshot" width="900">
+</p>
 
-DEV Dashboard
-Terminal Control Center
+<p align="center">
+  DEV Dashboard running inside a terminal
+</p>
 
 System Stats GitHub Repositories
 Repo Activity Todo List
